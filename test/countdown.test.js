@@ -22,6 +22,19 @@ describe('timeRemaining', () => {
     expect(timeRemaining(now, target).isPast).toBe(true);
   });
 
+  it('treats now exactly equal to the target as past, not future', () => {
+    const instant = new Date('2026-12-31T23:59:59Z');
+
+    const result = timeRemaining(instant, instant);
+
+    expect(result.totalMs).toBe(0);
+    expect(result.isPast).toBe(true);
+    expect(result.days).toBe(0);
+    expect(result.hours).toBe(0);
+    expect(result.minutes).toBe(0);
+    expect(result.seconds).toBe(0);
+  });
+
   it('breaks a multi-day gap into days/hours/minutes/seconds', () => {
     const now = new Date('2026-07-10T00:00:00Z');
     const target = new Date('2026-07-12T01:02:03Z');
