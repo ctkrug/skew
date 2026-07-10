@@ -116,8 +116,11 @@ function explainerMarkup() {
 function countdownMarkup() {
   return `
     <section class="panel" aria-label="countdown">
-      <span class="muted">Time to the Dec 2026 decision boundary</span>
+      <h2 id="countdown-heading">Countdown to the Dec 2026 decision boundary</h2>
       <div class="clock-value" data-field="countdown-value"></div>
+      <p class="countdown__decided" data-field="decided" hidden aria-live="polite">
+        The decision boundary has passed &mdash; check IERS Bulletin C for the outcome.
+      </p>
     </section>
   `;
 }
@@ -147,7 +150,18 @@ function updateDial(panel, date) {
 
 function updateCountdown(root, now) {
   const remaining = timeRemaining(now, DECISION_INSTANT);
-  root.querySelector('[data-field="countdown-value"]').textContent =
+  const valueEl = root.querySelector('[data-field="countdown-value"]');
+  const decidedEl = root.querySelector('[data-field="decided"]');
+
+  if (remaining.isPast) {
+    valueEl.hidden = true;
+    decidedEl.hidden = false;
+    return;
+  }
+
+  valueEl.hidden = false;
+  decidedEl.hidden = true;
+  valueEl.textContent =
     `${remaining.days}d ${pad(remaining.hours)}h ${pad(remaining.minutes)}m ${pad(remaining.seconds)}s`;
 }
 
