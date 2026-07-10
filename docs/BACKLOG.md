@@ -73,7 +73,7 @@ criteria — no "works well" vibes checks.
     2027-01-01T00:00:00Z) without throwing or producing `NaN`.
   - `npm test` and `npm run lint` both exit 0 in CI on every push.
 
-- [ ] **3.4 — Design polish pass: accessibility & motion review**
+- [x] **3.4 — Design polish pass: accessibility & motion review**
   - Tab order through the full page is logical, and every icon-only control has an
     `aria-label`.
   - `docs/DESIGN.md`'s D3 self-review checklist (resize, squint, tab, click) has been
