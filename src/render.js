@@ -1,11 +1,19 @@
-import { currentClocks } from './clocks.js';
+import { currentClocks, TAI_UTC_OFFSET_SECONDS, GPS_UTC_OFFSET_SECONDS } from './clocks.js';
 import { timeRemaining, DECISION_INSTANT } from './countdown.js';
 import { handAngles } from './dial.js';
+import { offsetBarWidthPercent } from './offset-bar.js';
+
+const MAX_OFFSET_SECONDS = TAI_UTC_OFFSET_SECONDS;
 
 const CLOCK_CONFIG = [
-  { key: 'utc', label: 'UTC', sublabel: 'Coordinated Universal Time' },
-  { key: 'tai', label: 'TAI', sublabel: 'International Atomic Time' },
-  { key: 'gps', label: 'GPS', sublabel: 'GPS Time' },
+  { key: 'utc', label: 'UTC', sublabel: 'Coordinated Universal Time', offsetSeconds: 0 },
+  {
+    key: 'tai',
+    label: 'TAI',
+    sublabel: 'International Atomic Time',
+    offsetSeconds: TAI_UTC_OFFSET_SECONDS,
+  },
+  { key: 'gps', label: 'GPS', sublabel: 'GPS Time', offsetSeconds: GPS_UTC_OFFSET_SECONDS },
 ];
 
 function pad(n, width = 2) {
@@ -48,6 +56,22 @@ function dialMarkup() {
   `;
 }
 
+function offsetBarMarkup(clock) {
+  if (clock.offsetSeconds <= 0) return '';
+  const widthPercent = offsetBarWidthPercent(clock.offsetSeconds, MAX_OFFSET_SECONDS);
+  const tooltip = `${clock.label} is ${clock.offsetSeconds} seconds ahead of UTC`;
+  return `
+    <div class="offset-bar" data-offset-bar="${clock.key}" tabindex="0" aria-label="${tooltip}">
+      <svg class="offset-bar__svg" viewBox="0 0 100 12" preserveAspectRatio="none" role="img" aria-hidden="true">
+        <rect class="offset-bar__track" x="0" y="2" width="100" height="8" rx="2" />
+        <rect class="offset-bar__fill" x="0" y="2" width="${widthPercent}" height="8" rx="2" />
+      </svg>
+      <span class="offset-bar__caption">+${clock.offsetSeconds}s vs UTC</span>
+      <span class="offset-bar__tooltip" role="tooltip">${tooltip}</span>
+    </div>
+  `;
+}
+
 function clockPanelMarkup(clock) {
   return `
     <article class="clock-panel" data-clock="${clock.key}" aria-label="${clock.label} clock">
@@ -60,6 +84,7 @@ function clockPanelMarkup(clock) {
       </div>
       <div class="clock-panel__readout" data-field="readout">00:00:00</div>
       <div class="clock-panel__date" data-field="date"></div>
+      ${offsetBarMarkup(clock)}
     </article>
   `;
 }
