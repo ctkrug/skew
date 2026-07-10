@@ -202,3 +202,32 @@ describe('render — odds tracker', () => {
     expect(root.querySelector('.odds__asof time').getAttribute('datetime')).toBe(ODDS.asOf);
   });
 });
+
+describe('render — resilience to a corrupted DOM', () => {
+  it('skips a dial hand update rather than throwing if a hand element was removed', () => {
+    const root = freshRoot();
+    render(root, new Date('2026-07-10T00:00:00Z'));
+    root.querySelector('[data-clock="utc"] [data-hand="second"]').remove();
+
+    expect(() => render(root, new Date('2026-07-10T00:00:01Z'))).not.toThrow();
+  });
+
+  it('leaves the annotation untouched rather than throwing if it was removed', () => {
+    const root = freshRoot();
+    render(root, new Date('2026-07-10T00:00:00Z'));
+    root.querySelector('[data-annotation]').remove();
+
+    expect(() => render(root, new Date('2026-07-10T00:00:59Z'))).not.toThrow();
+  });
+
+  it('skips a whole panel rather than throwing if it was removed, and still updates the rest', () => {
+    const root = freshRoot();
+    render(root, new Date('2026-07-10T00:00:00Z'));
+    root.querySelector('[data-clock="tai"]').remove();
+
+    expect(() => render(root, new Date('2026-07-10T00:01:00Z'))).not.toThrow();
+    expect(root.querySelector('[data-clock="utc"] [data-field="readout"]').textContent).toBe(
+      '00:01:00',
+    );
+  });
+});
