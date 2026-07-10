@@ -30,14 +30,19 @@ Measures voted to abolish the leap second by 2035, but hasn't retired it yet, an
 still has to publish its decision in Bulletin C. Leap Second tracks the countdown to that
 boundary and a running estimate of the odds, with the reasoning behind the number.
 
-## Features (planned — see [`docs/BACKLOG.md`](docs/BACKLOG.md))
+## Features (see [`docs/BACKLOG.md`](docs/BACKLOG.md) for the full story breakdown)
 
 - Three synchronized, animated clock faces (UTC / TAI / GPS) rendered in SVG, ticking in
-  real time with the offsets clearly labeled.
-- A live countdown to the December 31, 2026 decision boundary.
-- An odds tracker with the reasoning/sources behind the estimate.
+  real time with an offset bar under TAI and GPS proportional to their gap from UTC.
+- A live countdown to the December 31, 2026 decision boundary, with a "decided" state once
+  it passes.
+- An odds tracker with the reasoning and sources (IERS Bulletin C, the 2022 CGPM
+  resolution) behind the estimate.
 - A short, legible explainer of _why_ the three clocks disagree.
-- Fully responsive, keyboard-accessible, and designed to be looked at (not just correct).
+- A signature detail: at the `:59`-second mark, a dashed leader-line callout sweeps in on
+  the UTC dial labeling the exact TAI/GPS offsets.
+- Fully responsive (390 / 768 / 1440px), keyboard-accessible, and respects
+  `prefers-reduced-motion`.
 
 ## Stack
 
@@ -58,16 +63,21 @@ npm run build     # production build into dist/
 
 ```
 src/
-  clocks.js        # UTC/TAI/GPS offset math — the source of truth for all three clocks
+  clocks.js         # UTC/TAI/GPS offset math — the source of truth for all three clocks
   countdown.js      # countdown + odds-tracker logic for the Dec 2026 decision
-  render.js         # SVG clock rendering and DOM wiring
-  main.js           # entry point
-test/               # Vitest unit tests
+  dial.js            # pure hand-angle math for the SVG clock dials
+  offset-bar.js       # pure width-percentage math for the offset bars
+  render.js          # SVG clock rendering and DOM wiring (mount once, update per tick)
+  main.js            # entry point
+test/                # Vitest unit tests
 docs/
-  VISION.md          # problem, audience, design decisions, what "done" looks like
-  BACKLOG.md         # epic/story breakdown with acceptance criteria
-  DESIGN.md          # visual design direction and tokens
+  VISION.md           # problem, audience, design decisions, what "done" looks like
+  BACKLOG.md          # epic/story breakdown with acceptance criteria
+  DESIGN.md           # visual design direction and tokens
+  ARCHITECTURE.md     # concise map of the codebase for future work
 ```
+
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for how the pieces fit together.
 
 ## License
 
