@@ -60,17 +60,22 @@ rest — no animation logic lives in JS.
 
 Each pure module has example-based unit tests at its boundaries (see `test/dial.test.js`,
 `test/offset-bar.test.js`, `test/countdown.test.js` for the exact leap-second-boundary
-instant). `test/render.test.js` drives `render()` against a `happy-dom` document and asserts
-on the resulting DOM — offsets, ARIA labels, focusability, and DOM-identity stability across
-repeat renders — rather than on markup strings, so refactors of the markup shape don't break
-tests that don't care about it.
+instant, including the `now === target` equality edge and a negative/zero max-offset guard).
+`test/render.test.js` drives `render()` against a `happy-dom` document and asserts on the
+resulting DOM — offsets, ARIA labels, focusability, DOM-identity stability across repeat
+renders, recovery when a hand/annotation/panel element is missing from the DOM, and that node
+count holds steady over 1000 simulated ticks — rather than on markup strings, so refactors of
+the markup shape don't break tests that don't care about it. `test/design-tokens.test.js`
+parses the actual custom-property values out of `style.css` and pins the text-color tokens to
+WCAG AA's 4.5:1 contrast floor, so a future palette tweak can't silently regress legibility.
 
 ## Running things
 
 ```bash
 npm install
-npm run dev     # local dev server
-npm test        # vitest run
-npm run lint    # eslint .
-npm run build   # production build into dist/, base-path-relative for subpath hosting
+npm run dev       # local dev server
+npm test          # vitest run
+npm run coverage  # vitest run --coverage, full src/ report (v8, html + text)
+npm run lint      # eslint .
+npm run build     # production build into dist/, base-path-relative for subpath hosting
 ```
