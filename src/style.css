@@ -51,15 +51,35 @@ body {
 }
 
 .wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 2rem;
   letter-spacing: -0.01em;
   margin: 0;
+  color: var(--text);
 }
 
-.wordmark__accent {
+.wordmark__mark {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+}
+
+.wordmark__text {
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+.wordmark__leap {
   color: var(--accent);
+  font-size: 0.45em;
+  font-weight: 600;
+  line-height: 1;
+  margin-left: 3px;
+  margin-top: 0.15em;
 }
 
 .panel {

@@ -195,8 +195,19 @@ function countdownMarkup() {
 function mount(root) {
   root.innerHTML = `
     <header class="page-header">
-      <h1 class="wordmark">Leap<span class="wordmark__accent">Second</span></h1>
-      <p class="muted">UTC vs TAI vs GPS, live — and a countdown to the Dec 2026 decision.</p>
+      <h1 class="wordmark">
+        <svg class="wordmark__mark" viewBox="0 0 24 24" role="img" aria-label="Skew">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" />
+          <line x1="12" y1="12" x2="12" y2="5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <line x1="12" y1="12" x2="7.6" y2="14.2" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" />
+          <circle cx="12" cy="12" r="1.4" fill="var(--accent)" />
+        </svg>
+        <span class="wordmark__text">Skew<span class="wordmark__leap">+1s</span></span>
+      </h1>
+      <p class="muted">
+        Three time standards, side by side and ticking. Plus a live countdown to
+        the December 2026 leap-second decision.
+      </p>
     </header>
     <div class="clocks-grid">
       ${CLOCK_CONFIG.map(clockPanelMarkup).join('')}
