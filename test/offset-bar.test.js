@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import fc from 'fast-check';
 import { offsetBarWidthPercent } from '../src/offset-bar.js';
 
 describe('offsetBarWidthPercent', () => {
@@ -28,5 +29,49 @@ describe('offsetBarWidthPercent', () => {
 
   it('returns 0 rather than a flipped-sign ratio when max is negative', () => {
     expect(offsetBarWidthPercent(10, -37)).toBe(0);
+  });
+});
+
+describe('offsetBarWidthPercent — properties', () => {
+  it('always stays within [0, 100] for any finite offset and a positive max', () => {
+    fc.assert(
+      fc.property(
+        fc.double({ min: -1e6, max: 1e6, noNaN: true }),
+        fc.double({ min: Number.EPSILON, max: 1e6, noNaN: true }),
+        (offset, max) => {
+          const result = offsetBarWidthPercent(offset, max);
+          expect(result).toBeGreaterThanOrEqual(0);
+          expect(result).toBeLessThanOrEqual(100);
+        },
+      ),
+    );
+  });
+
+  it('is monotonically non-decreasing in offset for a fixed positive max', () => {
+    fc.assert(
+      fc.property(
+        fc.double({ min: -1e6, max: 1e6, noNaN: true }),
+        fc.double({ min: -1e6, max: 1e6, noNaN: true }),
+        fc.double({ min: Number.EPSILON, max: 1e6, noNaN: true }),
+        (a, b, max) => {
+          const [lo, hi] = a <= b ? [a, b] : [b, a];
+          expect(offsetBarWidthPercent(lo, max)).toBeLessThanOrEqual(
+            offsetBarWidthPercent(hi, max),
+          );
+        },
+      ),
+    );
+  });
+
+  it('is always exactly 0 for any non-positive max', () => {
+    fc.assert(
+      fc.property(
+        fc.double({ min: -1e6, max: 1e6, noNaN: true }),
+        fc.double({ min: -1e6, max: 0, noNaN: true }),
+        (offset, max) => {
+          expect(offsetBarWidthPercent(offset, max)).toBe(0);
+        },
+      ),
+    );
   });
 });
