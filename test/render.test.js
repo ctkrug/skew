@@ -139,9 +139,9 @@ describe('render — signature annotation sweep', () => {
 
     try {
       render(root, new Date('2026-07-10T00:00:30Z'));
-      expect(
-        root.querySelector('[data-annotation]').classList.contains('annotation--active'),
-      ).toBe(true);
+      expect(root.querySelector('[data-annotation]').classList.contains('annotation--active')).toBe(
+        true,
+      );
     } finally {
       window.matchMedia = originalMatchMedia;
     }
