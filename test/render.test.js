@@ -261,3 +261,18 @@ describe('render — resilience to a corrupted DOM', () => {
     );
   });
 });
+
+describe('render — long-session stability', () => {
+  it('holds a constant DOM node count across thousands of ticks (no leak)', () => {
+    const root = freshRoot();
+    const start = new Date('2026-07-10T00:00:00Z');
+    render(root, start);
+    const nodeCountAfterMount = root.querySelectorAll('*').length;
+
+    for (let i = 1; i <= 1000; i += 1) {
+      render(root, new Date(start.getTime() + i * 1000));
+    }
+
+    expect(root.querySelectorAll('*').length).toBe(nodeCountAfterMount);
+  });
+});
