@@ -54,6 +54,21 @@ describe('render — clock panels', () => {
     expect(panelBefore).toBe(panelAfter);
   });
 
+  it('rolls TAI and GPS onto tomorrow while UTC is still today, near midnight', () => {
+    const root = freshRoot();
+    render(root, new Date('2026-07-10T23:59:30Z'));
+
+    expect(root.querySelector('[data-clock="utc"] [data-field="date"]').textContent).toBe(
+      '2026-07-10',
+    );
+    expect(root.querySelector('[data-clock="tai"] [data-field="date"]').textContent).toBe(
+      '2026-07-11',
+    );
+    expect(root.querySelector('[data-clock="gps"] [data-field="date"]').textContent).toBe(
+      '2026-07-10',
+    );
+  });
+
   it('renders an offset bar with an exact-seconds label for TAI and GPS, but not UTC', () => {
     const root = freshRoot();
     render(root, new Date('2026-07-10T00:00:00Z'));
