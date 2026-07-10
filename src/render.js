@@ -72,6 +72,16 @@ function offsetBarMarkup(clock) {
   `;
 }
 
+function annotationMarkup(clock) {
+  if (clock.key !== 'utc') return '';
+  return `
+    <div class="annotation" data-annotation aria-hidden="true">
+      <span class="annotation__leader"></span>
+      <span class="annotation__label">TAI +${TAI_UTC_OFFSET_SECONDS}s &middot; GPS +${GPS_UTC_OFFSET_SECONDS}s</span>
+    </div>
+  `;
+}
+
 function clockPanelMarkup(clock) {
   return `
     <article class="clock-panel" data-clock="${clock.key}" aria-label="${clock.label} clock">
@@ -81,6 +91,7 @@ function clockPanelMarkup(clock) {
       </header>
       <div class="clock-panel__dial">
         ${dialMarkup()}
+        ${annotationMarkup(clock)}
       </div>
       <div class="clock-panel__readout" data-field="readout">00:00:00</div>
       <div class="clock-panel__date" data-field="date"></div>
@@ -212,6 +223,21 @@ function updateCountdown(root, now) {
     `${remaining.days}d ${pad(remaining.hours)}h ${pad(remaining.minutes)}m ${pad(remaining.seconds)}s`;
 }
 
+function prefersReducedMotion() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
+function updateAnnotation(root, utcDate) {
+  const annotation = root.querySelector('[data-annotation]');
+  if (!annotation) return;
+  const active = utcDate.getUTCSeconds() === 59 || prefersReducedMotion();
+  annotation.classList.toggle('annotation--active', active);
+}
+
 function update(root, now) {
   const clocks = currentClocks(now);
 
@@ -224,6 +250,7 @@ function update(root, now) {
     updateDial(panel, date);
   }
 
+  updateAnnotation(root, clocks.utc);
   updateCountdown(root, now);
 }
 
