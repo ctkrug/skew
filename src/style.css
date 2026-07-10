@@ -1,0 +1,72 @@
+:root {
+  --bg: #f2ede3;
+  --surface-1: #ffffff;
+  --surface-2: #e9e2d1;
+  --text: #16213a;
+  --text-muted: #5b6b82;
+  --accent: #e2572b;
+  --accent-support: #2a5c8a;
+  --success: #2f855a;
+  --danger: #c23b3b;
+  --border: rgba(22, 33, 58, 0.15);
+
+  --font-display: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+  --font-body: 'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+
+  --radius: 4px;
+  --shadow-panel: 2px 2px 0 rgba(22, 33, 58, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(22, 33, 58, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 33, 58, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+#app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-3);
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.panel {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+  padding: var(--space-3);
+}
+
+.clock-value {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
