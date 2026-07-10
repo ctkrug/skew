@@ -172,8 +172,10 @@ function countdownMarkup() {
 
 function mount(root) {
   root.innerHTML = `
-    <h1>Leap Second</h1>
-    <p class="muted">UTC vs TAI vs GPS, live — and a countdown to the Dec 2026 decision.</p>
+    <header class="page-header">
+      <h1 class="wordmark">Leap<span class="wordmark__accent">Second</span></h1>
+      <p class="muted">UTC vs TAI vs GPS, live — and a countdown to the Dec 2026 decision.</p>
+    </header>
     <div class="clocks-grid">
       ${CLOCK_CONFIG.map(clockPanelMarkup).join('')}
     </div>
