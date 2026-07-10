@@ -143,15 +143,13 @@ function oddsListMarkup() {
           </div>
           <p class="odds__reasoning">${outcome.reasoning}</p>
         </li>
-      `
+      `,
     )
     .join('');
 }
 
 function oddsMarkup() {
-  const totalPercent = Math.round(
-    ODDS.outcomes.reduce((sum, o) => sum + o.probability, 0) * 100
-  );
+  const totalPercent = Math.round(ODDS.outcomes.reduce((sum, o) => sum + o.probability, 0) * 100);
   return `
     <div class="odds">
       <h2 id="odds-heading">Odds tracker</h2>
@@ -219,8 +217,7 @@ function updateCountdown(root, now) {
 
   valueEl.hidden = false;
   decidedEl.hidden = true;
-  valueEl.textContent =
-    `${remaining.days}d ${pad(remaining.hours)}h ${pad(remaining.minutes)}m ${pad(remaining.seconds)}s`;
+  valueEl.textContent = `${remaining.days}d ${pad(remaining.hours)}h ${pad(remaining.minutes)}m ${pad(remaining.seconds)}s`;
 }
 
 function prefersReducedMotion() {

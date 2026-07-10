@@ -24,13 +24,13 @@ describe('render — clock panels', () => {
     render(root, new Date('2026-07-10T00:00:00Z'));
 
     expect(root.querySelector('[data-clock="utc"] [data-field="readout"]').textContent).toBe(
-      '00:00:00'
+      '00:00:00',
     );
     expect(root.querySelector('[data-clock="tai"] [data-field="readout"]').textContent).toBe(
-      '00:00:37'
+      '00:00:37',
     );
     expect(root.querySelector('[data-clock="gps"] [data-field="readout"]').textContent).toBe(
-      '00:00:18'
+      '00:00:18',
     );
   });
 
@@ -40,7 +40,7 @@ describe('render — clock panels', () => {
     render(root, new Date('2026-07-10T00:01:00Z'));
 
     expect(root.querySelector('[data-clock="utc"] [data-field="readout"]').textContent).toBe(
-      '00:01:00'
+      '00:01:00',
     );
   });
 
@@ -73,7 +73,7 @@ describe('render — clock panels', () => {
     const taiFill = root.querySelector('[data-clock="tai"] .offset-bar__fill');
     const gpsFill = root.querySelector('[data-clock="gps"] .offset-bar__fill');
     expect(Number(taiFill.getAttribute('width'))).toBeGreaterThan(
-      Number(gpsFill.getAttribute('width'))
+      Number(gpsFill.getAttribute('width')),
     );
     expect(Number(taiFill.getAttribute('width'))).toBe(100);
   });
@@ -83,7 +83,7 @@ describe('render — clock panels', () => {
     render(root, new Date('2026-07-10T00:00:00Z'));
 
     expect(
-      root.querySelector('[data-clock="tai"] [data-offset-bar]').getAttribute('tabindex')
+      root.querySelector('[data-clock="tai"] [data-offset-bar]').getAttribute('tabindex'),
     ).toBe('0');
   });
 });
@@ -105,7 +105,7 @@ describe('render — signature annotation sweep', () => {
     render(root, new Date('2026-07-10T00:01:00Z'));
 
     expect(root.querySelector('[data-annotation]').classList.contains('annotation--active')).toBe(
-      false
+      false,
     );
   });
 
