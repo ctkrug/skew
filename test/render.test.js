@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from 'vitest';
 import { render } from '../src/render.js';
-import { DECISION_INSTANT } from '../src/countdown.js';
+import { DECISION_INSTANT, ODDS } from '../src/countdown.js';
 
 function freshRoot() {
   return document.createElement('div');
@@ -129,5 +129,35 @@ describe('render — countdown', () => {
     const root = freshRoot();
     expect(() => render(root, DECISION_INSTANT)).not.toThrow();
     expect(root.querySelector('[data-field="decided"]').hidden).toBe(false);
+  });
+});
+
+describe('render — odds tracker', () => {
+  it('lists every outcome from ODDS with its probability and reasoning', () => {
+    const root = freshRoot();
+    render(root, new Date('2026-07-10T00:00:00Z'));
+
+    const items = root.querySelectorAll('.odds__item');
+    expect(items.length).toBe(ODDS.outcomes.length);
+    for (const outcome of ODDS.outcomes) {
+      expect(root.textContent).toContain(outcome.label);
+      expect(root.textContent).toContain(outcome.reasoning);
+    }
+  });
+
+  it('shows the listed probabilities summing to 100%', () => {
+    const root = freshRoot();
+    render(root, new Date('2026-07-10T00:00:00Z'));
+
+    expect(root.querySelector('.odds__total').textContent).toContain('100%');
+  });
+
+  it('cites IERS Bulletin C and the 2022 CGPM resolution, with an as-of date', () => {
+    const root = freshRoot();
+    render(root, new Date('2026-07-10T00:00:00Z'));
+
+    expect(root.textContent).toContain('IERS Bulletin C');
+    expect(root.textContent).toContain('2022 CGPM');
+    expect(root.querySelector('.odds__asof time').getAttribute('datetime')).toBe(ODDS.asOf);
   });
 });
