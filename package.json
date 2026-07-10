@@ -6,6 +6,9 @@
   "private": true,
   "license": "MIT",
   "author": "ctkrug",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
