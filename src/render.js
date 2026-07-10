@@ -1,34 +1,129 @@
 import { currentClocks } from './clocks.js';
 import { timeRemaining, DECISION_INSTANT } from './countdown.js';
+import { handAngles } from './dial.js';
 
-function formatClock(date) {
-  return date.toISOString().replace('T', ' ').replace('Z', ' UTC-frame');
+const CLOCK_CONFIG = [
+  { key: 'utc', label: 'UTC', sublabel: 'Coordinated Universal Time' },
+  { key: 'tai', label: 'TAI', sublabel: 'International Atomic Time' },
+  { key: 'gps', label: 'GPS', sublabel: 'GPS Time' },
+];
+
+function pad(n, width = 2) {
+  return String(n).padStart(width, '0');
 }
 
-function pad(n) {
-  return String(n).padStart(2, '0');
+function formatReadout(date) {
+  return `${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
 }
 
-/**
- * Minimal scaffold-level readout: numeric UTC/TAI/GPS values and a countdown.
- * The full SVG dial + offset-bar + annotation-sweep treatment from
- * docs/DESIGN.md is a BUILD-phase story.
- */
-export function render(root, now = new Date()) {
-  const { utc, tai, gps } = currentClocks(now);
-  const remaining = timeRemaining(now, DECISION_INSTANT);
+function formatDatePart(date) {
+  return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
+}
 
+function tickMarksMarkup() {
+  let ticks = '';
+  for (let i = 0; i < 12; i += 1) {
+    const angle = (i * 30 * Math.PI) / 180;
+    const outer = 46;
+    const inner = i % 3 === 0 ? 38 : 41;
+    const x1 = 50 + outer * Math.sin(angle);
+    const y1 = 50 - outer * Math.cos(angle);
+    const x2 = 50 + inner * Math.sin(angle);
+    const y2 = 50 - inner * Math.cos(angle);
+    ticks += `<line class="dial__tick" x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" />`;
+  }
+  return ticks;
+}
+
+function dialMarkup() {
+  return `
+    <svg class="dial" viewBox="0 0 100 100" role="img" aria-hidden="true">
+      <circle class="dial__face" cx="50" cy="50" r="46" />
+      ${tickMarksMarkup()}
+      <line class="dial__hand dial__hand--hour" data-hand="hour" x1="50" y1="50" x2="50" y2="30" />
+      <line class="dial__hand dial__hand--minute" data-hand="minute" x1="50" y1="50" x2="50" y2="20" />
+      <line class="dial__hand dial__hand--second" data-hand="second" x1="50" y1="50" x2="50" y2="15" />
+      <circle class="dial__pivot" cx="50" cy="50" r="2.5" />
+    </svg>
+  `;
+}
+
+function clockPanelMarkup(clock) {
+  return `
+    <article class="clock-panel" data-clock="${clock.key}" aria-label="${clock.label} clock">
+      <header class="clock-panel__header">
+        <h2 class="clock-panel__label">${clock.label}</h2>
+        <p class="clock-panel__sublabel">${clock.sublabel}</p>
+      </header>
+      <div class="clock-panel__dial">
+        ${dialMarkup()}
+      </div>
+      <div class="clock-panel__readout" data-field="readout">00:00:00</div>
+      <div class="clock-panel__date" data-field="date"></div>
+    </article>
+  `;
+}
+
+function countdownMarkup() {
+  return `
+    <section class="panel" aria-label="countdown">
+      <span class="muted">Time to the Dec 2026 decision boundary</span>
+      <div class="clock-value" data-field="countdown-value"></div>
+    </section>
+  `;
+}
+
+function mount(root) {
   root.innerHTML = `
     <h1>Leap Second</h1>
     <p class="muted">UTC vs TAI vs GPS, live — and a countdown to the Dec 2026 decision.</p>
-    <section class="panel" aria-label="clocks">
-      <div><span class="muted">UTC</span> <span class="clock-value">${formatClock(utc)}</span></div>
-      <div><span class="muted">TAI</span> <span class="clock-value">${formatClock(tai)}</span></div>
-      <div><span class="muted">GPS</span> <span class="clock-value">${formatClock(gps)}</span></div>
-    </section>
-    <section class="panel" aria-label="countdown" style="margin-top: 16px;">
-      <span class="muted">Time to the Dec 2026 decision boundary</span>
-      <div class="clock-value">${remaining.days}d ${pad(remaining.hours)}h ${pad(remaining.minutes)}m ${pad(remaining.seconds)}s</div>
-    </section>
+    <div class="clocks-grid">
+      ${CLOCK_CONFIG.map(clockPanelMarkup).join('')}
+    </div>
+    ${countdownMarkup()}
   `;
+  root.dataset.mounted = '1';
+}
+
+function updateDial(panel, date) {
+  const { hourDeg, minuteDeg, secondDeg } = handAngles(date);
+  const hour = panel.querySelector('[data-hand="hour"]');
+  const minute = panel.querySelector('[data-hand="minute"]');
+  const second = panel.querySelector('[data-hand="second"]');
+  if (hour) hour.setAttribute('transform', `rotate(${hourDeg} 50 50)`);
+  if (minute) minute.setAttribute('transform', `rotate(${minuteDeg} 50 50)`);
+  if (second) second.setAttribute('transform', `rotate(${secondDeg} 50 50)`);
+}
+
+function updateCountdown(root, now) {
+  const remaining = timeRemaining(now, DECISION_INSTANT);
+  root.querySelector('[data-field="countdown-value"]').textContent =
+    `${remaining.days}d ${pad(remaining.hours)}h ${pad(remaining.minutes)}m ${pad(remaining.seconds)}s`;
+}
+
+function update(root, now) {
+  const clocks = currentClocks(now);
+
+  for (const clock of CLOCK_CONFIG) {
+    const panel = root.querySelector(`[data-clock="${clock.key}"]`);
+    if (!panel) continue;
+    const date = clocks[clock.key];
+    panel.querySelector('[data-field="readout"]').textContent = formatReadout(date);
+    panel.querySelector('[data-field="date"]').textContent = formatDatePart(date);
+    updateDial(panel, date);
+  }
+
+  updateCountdown(root, now);
+}
+
+/**
+ * Renders (or, on repeat calls with the same root, live-updates) the app.
+ * The DOM is built once and patched in place thereafter so focus/hover
+ * state on future interactive elements survives the once-a-second tick.
+ */
+export function render(root, now = new Date()) {
+  if (!root.dataset.mounted) {
+    mount(root);
+  }
+  update(root, now);
 }
