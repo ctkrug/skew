@@ -169,6 +169,66 @@ h1 {
   margin-top: 2px;
 }
 
+.offset-bar {
+  position: relative;
+  width: 100%;
+  margin-top: var(--space-2);
+  border-radius: var(--radius);
+  outline-offset: 3px;
+  cursor: default;
+}
+
+.offset-bar__svg {
+  width: 100%;
+  height: 10px;
+  display: block;
+}
+
+.offset-bar__track {
+  fill: var(--surface-2);
+}
+
+.offset-bar__fill {
+  fill: var(--accent-support);
+  transition: width 200ms ease-out;
+}
+
+.offset-bar__caption {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.offset-bar__tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--text);
+  color: var(--surface-1);
+  font-size: 0.8rem;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.offset-bar:hover .offset-bar__tooltip,
+.offset-bar:focus-visible .offset-bar__tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.offset-bar:focus-visible {
+  outline: 2px solid var(--accent);
+}
+
 @media (min-width: 1024px) {
   .clocks-grid {
     grid-template-columns: repeat(3, 1fr);
