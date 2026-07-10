@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from 'vitest';
 import { render } from '../src/render.js';
+import { DECISION_INSTANT } from '../src/countdown.js';
 
 function freshRoot() {
   return document.createElement('div');
@@ -105,8 +106,28 @@ describe('render — countdown', () => {
     const root = freshRoot();
     render(root, new Date('2026-07-10T00:00:00Z'));
 
-    expect(root.querySelector('[data-field="countdown-value"]').textContent).toMatch(
-      /\d+d \d{2}h \d{2}m \d{2}s/
-    );
+    const value = root.querySelector('[data-field="countdown-value"]');
+    expect(value.hidden).toBe(false);
+    expect(value.textContent).toMatch(/\d+d \d{2}h \d{2}m \d{2}s/);
+    expect(root.querySelector('[data-field="decided"]').hidden).toBe(true);
+  });
+
+  it('switches to a decided state once the boundary has passed, with no negative numbers or NaN', () => {
+    const root = freshRoot();
+    const afterBoundary = new Date(DECISION_INSTANT.getTime() + 60_000);
+    render(root, afterBoundary);
+
+    const value = root.querySelector('[data-field="countdown-value"]');
+    const decided = root.querySelector('[data-field="decided"]');
+    expect(value.hidden).toBe(true);
+    expect(decided.hidden).toBe(false);
+    expect(decided.textContent).not.toContain('NaN');
+    expect(decided.textContent).not.toContain('-');
+  });
+
+  it('handles the exact boundary instant without throwing', () => {
+    const root = freshRoot();
+    expect(() => render(root, DECISION_INSTANT)).not.toThrow();
+    expect(root.querySelector('[data-field="decided"]').hidden).toBe(false);
   });
 });
