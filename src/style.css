@@ -122,6 +122,7 @@ body {
   width: 100%;
   max-width: 220px;
   margin: var(--space-3) 0;
+  overflow: visible;
 }
 
 .dial {
@@ -177,6 +178,49 @@ body {
   font-family: var(--font-display);
   font-size: 0.85rem;
   margin-top: 2px;
+}
+
+.annotation {
+  position: absolute;
+  top: 8px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateX(12px);
+  transition:
+    opacity 200ms ease-out,
+    transform 200ms ease-out;
+  pointer-events: none;
+}
+
+.annotation--active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.annotation__leader {
+  width: 20px;
+  height: 0;
+  border-top: 1px dashed var(--accent);
+}
+
+.annotation__label {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  color: var(--accent);
+  background: var(--surface-1);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 2px 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .annotation {
+    transition: none;
+  }
 }
 
 .offset-bar {
