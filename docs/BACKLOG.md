@@ -5,7 +5,7 @@ criteria — no "works well" vibes checks.
 
 ## Epic 1 — Core clock comparison (the wow moment)
 
-- [ ] **1.1 — Three live SVG clock dials for UTC / TAI / GPS** _(wow moment — build first)_
+- [x] **1.1 — Three live SVG clock dials for UTC / TAI / GPS** _(wow moment — build first)_
   - Loading the page shows three distinct dial readouts labeled UTC, TAI, and GPS, each
     updating every second with no page reload.
   - At any given tick, TAI's displayed value is exactly 37 seconds ahead of UTC's, and GPS's
@@ -13,12 +13,12 @@ criteria — no "works well" vibes checks.
   - Each dial is rendered as inline SVG (inspectable in the DOM tree), not canvas or a raster
     image.
 
-- [ ] **1.2 — Offset bar under each non-UTC clock**
+- [x] **1.2 — Offset bar under each non-UTC clock**
   - A horizontal bar beneath the TAI and GPS readouts is proportionally scaled to its offset
     (37s vs 18s), so the two bars are visibly different lengths.
   - Hovering or focusing a bar reveals a tooltip/label stating the exact offset in seconds.
 
-- [ ] **1.3 — Plain-language explainer: why the three clocks differ**
+- [x] **1.3 — Plain-language explainer: why the three clocks differ**
   - A section states what UTC/TAI/GPS are and why they diverge, citing the last leap second
     (end of 2016) and the GPS epoch (1980-01-06).
   - The section uses a real heading (not a styled `div`) and is reachable by keyboard/screen
