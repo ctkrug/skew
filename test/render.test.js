@@ -116,6 +116,21 @@ describe('render — signature annotation sweep', () => {
     expect(root.querySelector('.annotation__label').textContent).toContain('37s');
     expect(root.querySelector('.annotation__label').textContent).toContain('18s');
   });
+
+  it('stays always active, not just at :59, when prefers-reduced-motion is set', () => {
+    const root = freshRoot();
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = (query) => ({ matches: query.includes('reduce'), media: query });
+
+    try {
+      render(root, new Date('2026-07-10T00:00:30Z'));
+      expect(
+        root.querySelector('[data-annotation]').classList.contains('annotation--active'),
+      ).toBe(true);
+    } finally {
+      window.matchMedia = originalMatchMedia;
+    }
+  });
 });
 
 describe('render — explainer', () => {
