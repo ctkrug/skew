@@ -16,11 +16,16 @@ to tell you the truth about time.
 | `--surface-2`      | `#e9e2d1`                | secondary/recessed surface (panel headers, track backgrounds) |
 | `--text`           | `#16213a`                | primary ink — deep navy, near-black                           |
 | `--text-muted`     | `#5b6b82`                | secondary ink — captions, labels, timestamps                  |
-| `--accent`         | `#e2572b`                | signal accent — the leap second itself, countdown emphasis    |
+| `--accent`         | `#cd471c`                | signal accent — the leap second itself, countdown emphasis    |
 | `--accent-support` | `#2a5c8a`                | support accent — TAI/GPS linework, secondary emphasis         |
 | `--success`        | `#2f855a`                | positive/confirmed states                                     |
 | `--danger`         | `#c23b3b`                | error states                                                  |
 | `--border`         | `#16213a` at 15% opacity | hairline schematic borders                                    |
+
+_`--accent` was darkened from the original `#e2572b` during QA: at 0.7rem/1rem text sizes
+(the annotation label, the countdown's decided-state message) the original only hit 3.73:1
+against `--surface-1`, short of WCAG AA's 4.5:1 for non-large text. `#cd471c` keeps the same
+hue and reads as the same orange but clears 4.5:1 everywhere it's used as text._
 
 **Type pairing:** [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) for
 the wordmark, headings, and all ticking digits (a monospace face reads as _instrumentation_,
