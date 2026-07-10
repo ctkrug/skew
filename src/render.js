@@ -129,6 +129,16 @@ function formatAsOf(isoDate) {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
+function formatBoundary(date) {
+  const datePart = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+  return `${datePart}, ${formatReadout(date)} UTC`;
+}
+
 function oddsListMarkup() {
   return ODDS.outcomes
     .map(
@@ -172,6 +182,9 @@ function countdownMarkup() {
         <div class="clock-value" data-field="countdown-value"></div>
         <p class="countdown__decided" data-field="decided" hidden aria-live="polite">
           The decision boundary has passed &mdash; check IERS Bulletin C for the outcome.
+        </p>
+        <p class="countdown__boundary">
+          Boundary instant: <time datetime="${DECISION_INSTANT.toISOString()}">${formatBoundary(DECISION_INSTANT)}</time>
         </p>
       </div>
       ${oddsMarkup()}

@@ -160,6 +160,17 @@ describe('render — countdown', () => {
     expect(() => render(root, DECISION_INSTANT)).not.toThrow();
     expect(root.querySelector('[data-field="decided"]').hidden).toBe(false);
   });
+
+  it('states the exact boundary instant as a machine-readable time element', () => {
+    const root = freshRoot();
+    render(root, new Date('2026-07-10T00:00:00Z'));
+
+    const boundary = root.querySelector('.countdown__boundary time');
+    expect(boundary).not.toBeNull();
+    expect(boundary.getAttribute('datetime')).toBe(DECISION_INSTANT.toISOString());
+    expect(boundary.textContent).toContain('2026');
+    expect(boundary.textContent).toContain('UTC');
+  });
 });
 
 describe('render — odds tracker', () => {
