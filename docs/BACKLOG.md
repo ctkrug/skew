@@ -31,19 +31,19 @@ criteria — no "works well" vibes checks.
 
 ## Epic 2 — Countdown & odds tracker
 
-- [ ] **2.1 — Live countdown to the Dec 31, 2026 decision boundary**
+- [x] **2.1 — Live countdown to the Dec 31, 2026 decision boundary**
   - The countdown panel shows days/hours/minutes/seconds remaining and updates every second
     without a reload.
   - Once the target instant is in the past, the panel switches to a "decided" state instead
     of showing negative numbers or `NaN`.
 
-- [ ] **2.2 — Odds tracker with outcome breakdown and reasoning**
+- [x] **2.2 — Odds tracker with outcome breakdown and reasoning**
   - The panel lists each outcome (no leap second / positive leap second / negative leap
     second) with its probability and one sentence of reasoning, sourced from
     `src/countdown.js`'s `ODDS`.
   - The listed probabilities visibly sum to 100%.
 
-- [ ] **2.3 — Source citation for the odds estimate**
+- [x] **2.3 — Source citation for the odds estimate**
   - The odds panel names IERS Bulletin C and the 2022 CGPM resolution as the basis for the
     estimate.
   - The estimate's "as of" date is visible on the page.
